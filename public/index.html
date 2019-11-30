@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>Peryl-Gun</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- App -->
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/lib/webrtc.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/incremental-dom/0.6.0/incremental-dom-min.js"></script>
+    <script src="https://peter-rybar.gitlab.io/peryl/dist/umd/hsml-app.js"></script>
+
+    <script>
+        const gun = Gun(['http://localhost:3000/gun']);
+        const $todos = gun.get('textarea');
+
+        function actions(app, action, data, ev) {
+            console.log(action, data);
+            switch (action) {
+                case "GUN_CHANGE_TEXTAREA": {
+                    app.refs["input"].value = data;
+                    break;
+                }
+                case "LOCAL_CHANGE_TEXTAREA": {
+                    const value = ev.target.value;
+                    $todos.put({ text: value });
+                    event.target.value = ev.target.value;
+                    break;
+                }
+            }
+        }
+
+        function view(state) {
+            return [
+                ["div.w3-margin", [
+                    ["h1.title", ["Decentralized Textarea"]],
+                    ["textarea.w3-input~input", {
+                        on: ["input", "LOCAL_CHANGE_TEXTAREA"],
+                        value: state.value
+                    }]
+                ]]
+            ];
+        }
+
+        const app = peryl.app({ value: "" }, view, actions, "app");
+        $todos.map().on(function (data) {
+            if (data) {
+                app.action("GUN_CHANGE_TEXTAREA", data);
+            }
+        });
+    </script>
+</body>
+
+</html>
