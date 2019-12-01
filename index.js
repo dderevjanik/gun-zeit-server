@@ -6,6 +6,9 @@ const app = express();
 app.use(Gun.serve);
 app.use(express.static(__dirname));
 app.use(express.static(__dirname + "/public"));
+app.get("/status", (_, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 
 const server = app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
