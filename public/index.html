@@ -10,11 +10,6 @@
 </head>
 
 <body>
-    <div id="app">
-        <!-- App -->
-    </div>
-
-
     <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gun/lib/webrtc.js"></script>
 
@@ -22,7 +17,9 @@
     <script src="https://peter-rybar.gitlab.io/peryl/dist/umd/hsml-app.js"></script>
 
     <script>
-        const gun = Gun(['http://localhost:3000/gun']);
+        const gunUrl = new URL('/gun', document.location);
+        const gun = Gun([gunUrl.href]);
+        console.log('Gun connected to ', gunUrl.href);
         const $todos = gun.get('textarea');
 
         function actions(app, action, data, ev) {
